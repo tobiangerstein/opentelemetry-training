@@ -5,6 +5,9 @@ on:
     branches: ["**"] # run for any commit or tag push on any branch
     tags-ignore: ["v**"] # reserve v* tags for releases
 
+env:
+  REPOSITORY_NAME: novatecconsulting/opentelemetry-training
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +16,7 @@ jobs:
       matrix:
         include:
           - dockerfile: Dockerfile
-            image: novatecconsulting/opentelemetry-training-application
+            image: ${{ env.REPOSITORY_NAME }}-application
             context: .
         registry:
           - name: ghcr.io
@@ -22,7 +25,6 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-          - linux/arm64/v8
     steps:
       - name: Prepare
         run: |
@@ -83,7 +85,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: novatecconsulting/opentelemetry-training-application
+          - image: ${{ env.REPOSITORY_NAME }}-application
         registry:
           - name: ghcr.io
             username: ${{ github.repository_owner }}

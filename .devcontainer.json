@@ -2,6 +2,11 @@
 	"name": "otel-getting-started",
 	"workspaceFolder": "/workspaces/opentelemetry-training/labs",
 	"image": "ghcr.io/novatecconsulting/opentelemetry-training-application:latest",
+	"runArgs": [
+		"--init",
+		"--privileged"
+	],
+	"overrideCommand": false,
 	"containerEnv": {
 		"SHELL": "/bin/bash"
 	},
