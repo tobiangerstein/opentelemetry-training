@@ -43,7 +43,7 @@ jobs:
         with:
           registry: ${{ matrix.registry.name }}
           username: ${{ matrix.registry.username }}
-          password: ${{ secrets[matrix.registry.passowrd] }}
+          password: ${{ secrets[matrix.registry.password] }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -103,7 +103,7 @@ jobs:
         with:
           registry: ${{ matrix.registry.name }}
           username: ${{ matrix.registry.username }}
-          password: ${{ secrets[matrix.registry.passowrd] }}
+          password: ${{ secrets[matrix.registry.password] }}
 
       - name: Docker Metadata
         id: meta
