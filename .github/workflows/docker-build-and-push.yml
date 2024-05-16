@@ -5,16 +5,16 @@ on:
     branches: ["**"] # run for any commit or tag push on any branch
     tags-ignore: ["v**"] # reserve v* tags for releases
 
-env:
-  REGISTRY: ghcr.io
-  REGISTRY_IMAGE: ${{ github.repository }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        include:
+          - dockerfile: Dockerfile
+            image: ghcr.io/${{ github.repository }}-application
+            context: .
         platform:
           - linux/amd64
           - linux/arm64
@@ -27,10 +27,6 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Docker Metadata
-        id: meta
-        uses: docker/metadata-action@v5
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -45,16 +41,27 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+
       - name: Build and Push Digest
         id: build
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: Dockerfile
+          dockerfile: ${{ matrix.dockerfile }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ env.REGISTRY }}/${{ env.REGISTRY_IMAGE }}
-          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          tags: ${{ steps.meta.outputs.tags }}
+          outputs: type=image,name=${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export Digest
         run: |
@@ -95,7 +102,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REGISTRY_IMAGE }}
+          images: ghcr.io/${{ github.repository }}-application
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -106,8 +113,8 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY }}/${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+            $(printf 'ghcr.io/${{ github.repository }}-application@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ghcr.io/${{ github.repository }}-application:${{ steps.meta.outputs.version }}
