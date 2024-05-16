@@ -13,10 +13,12 @@ jobs:
       matrix:
         include:
           - dockerfile: Dockerfile
-            image: ${{ github.repository }}-application
+            image: novatecconsulting/opentelemetry-training-application
             context: .
         registry:
-          - ghcr.io
+          - name: ghcr.io
+            username: ${{ github.repository_owner }}
+            password: ${{ secrets.GITHUB_TOKEN }}
         platform:
           - linux/amd64
           - linux/arm64
@@ -39,9 +41,9 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ matrix.registry }}
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ matrix.registry.name }}
+          username: ${{ matrix.registry.username }}
+          password: ${{ matrix.registry.password }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -54,7 +56,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          dockerfile: ${{ matrix.dockerfile }}
+          file: ${{ matrix.dockerfile }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ matrix.registry }}/${{ matrix.image }},push-by-digest=true,name-canonical=true,push=true
@@ -81,9 +83,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: ${{ github.repository }}-application
+          - image: novatecconsulting/opentelemetry-training-application
         registry:
-          - ghcr.io
+          - name: ghcr.io
+            username: ${{ github.repository_owner }}
+            password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Download Digests
         uses: actions/download-artifact@v3
@@ -97,9 +101,9 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ matrix.registry }}
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ matrix.registry.name }}
+          username: ${{ matrix.registry.username }}
+          password: ${{ matrix.registry.password }}
 
       - name: Docker Metadata
         id: meta
