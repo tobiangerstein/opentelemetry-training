@@ -1,12 +1,11 @@
 name: Create and publish a Docker image
 
+
 on:
   push:
     branches: ["**"] # run for any commit or tag push on any branch
     tags-ignore: ["v**"] # reserve v* tags for releases
 
-env:
-  REPOSITORY_NAME: novatecconsulting/opentelemetry-training
 
 jobs:
   build:
@@ -16,7 +15,7 @@ jobs:
       matrix:
         include:
           - dockerfile: Dockerfile
-            image: ${{ env.REPOSITORY_NAME }}-application
+            image: novatecconsulting/opentelemetry-training-application
             context: .
         registry:
           - name: ghcr.io
@@ -85,7 +84,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - image: ${{ env.REPOSITORY_NAME }}-application
+          - image: novatecconsulting/opentelemetry-training-application
         registry:
           - name: ghcr.io
             username: ${{ github.repository_owner }}
