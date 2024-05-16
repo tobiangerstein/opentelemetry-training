@@ -69,9 +69,9 @@ jobs:
           touch "/tmp/digests/${digest#sha256:}"
 
       - name: Upload digest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ matrix.registry.name }}/${{ matrix.image }}-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -91,7 +91,7 @@ jobs:
             password: GITHUB_TOKEN
     steps:
       - name: Download Digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: digests
           path: /tmp/digests
