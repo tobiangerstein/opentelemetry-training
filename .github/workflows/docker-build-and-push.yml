@@ -118,12 +118,11 @@ jobs:
             type=ref,event=pr
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
 
-      - name: Create Manifest and Push Image
+      - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '{{ matrix.image }}@sha256:%s ' *)
-
+            $(printf '${{ matrix.image }}@sha256:%s ' *)
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect {{ matrix.image }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ matrix.image }}:${{ steps.meta.outputs.version }}
