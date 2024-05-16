@@ -18,7 +18,7 @@ jobs:
         registry:
           - name: ghcr.io
             username: ${{ github.repository_owner }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+            password: GITHUB_TOKEN
         platform:
           - linux/amd64
           - linux/arm64
@@ -43,7 +43,7 @@ jobs:
         with:
           registry: ${{ matrix.registry.name }}
           username: ${{ matrix.registry.username }}
-          password: ${{ matrix.registry.password }}
+          password: ${{ secrets[matrix.registry.passowrd] }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -87,7 +87,7 @@ jobs:
         registry:
           - name: ghcr.io
             username: ${{ github.repository_owner }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+            password: GITHUB_TOKEN
     steps:
       - name: Download Digests
         uses: actions/download-artifact@v3
@@ -103,7 +103,7 @@ jobs:
         with:
           registry: ${{ matrix.registry.name }}
           username: ${{ matrix.registry.username }}
-          password: ${{ matrix.registry.password }}
+          password: ${{ secrets[matrix.registry.passowrd] }}
 
       - name: Docker Metadata
         id: meta
