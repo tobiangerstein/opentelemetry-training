@@ -35,6 +35,6 @@ RUN pip install \
     opentelemetry-exporter-otlp \
     opentelemetry-instrumentation-flask
 
-WORKDIR /workspace
+WORKDIR /workspaces/opentelemetry-training
 
 EXPOSE 5000
