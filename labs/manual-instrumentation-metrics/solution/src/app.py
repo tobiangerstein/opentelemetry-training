@@ -3,11 +3,8 @@ import time
 import requests
 from client import ChaosClient, FakerClient
 from flask import Flask, Response, make_response, request
-from metric_utils import (
-    create_meter,
-    create_request_instruments,
-    create_resource_instruments,
-)
+from metric_utils import (create_meter, create_request_instruments,
+                          create_resource_instruments)
 
 # global variables
 app = Flask(__name__)
@@ -46,7 +43,7 @@ def get_user():
 
 def do_stuff():
     time.sleep(0.1)
-    url = "http://echo:6000/"
+    url = "http://localhost:6000/"
     response = requests.get(url)
     return response
 

@@ -8,7 +8,8 @@ from flask import Flask, make_response
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+from opentelemetry.sdk.trace.export import (BatchSpanProcessor,
+                                            ConsoleSpanExporter)
 
 # Initialize the OpenTelemetry tracer
 trace.set_tracer_provider(TracerProvider())
@@ -37,7 +38,7 @@ def get_user():
 
 def do_stuff():
     time.sleep(0.1)
-    url = "http://echo:6000/"
+    url = "http://localhost:6000/"
     response = requests.get(url)
     return response
 

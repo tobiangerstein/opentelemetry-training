@@ -7,11 +7,8 @@ import requests
 from client import ChaosClient, FakerClient
 from flask import Flask, Response, make_response, request
 from logging_utils import handler
-from metric_utils import (
-    create_meter,
-    create_request_instruments,
-    create_resource_instruments,
-)
+from metric_utils import (create_meter, create_request_instruments,
+                          create_resource_instruments)
 from opentelemetry import context
 from opentelemetry.propagate import extract, inject
 from opentelemetry.semconv.trace import SpanAttributes
@@ -79,7 +76,7 @@ def do_stuff():
     time.sleep(0.1)
     headers = {}
     inject(headers)
-    url = "http://echo:6000/"
+    url = "http://localhost:6000/"
     response = requests.get(url)
     print(response.json())
     logging.info(str(response.json()))
