@@ -3,9 +3,7 @@
 	"workspaceFolder": "/workspaces/opentelemetry-training/labs",
 	"image": "ghcr.io/novatecconsulting/opentelemetry-training-application:lf-initial",
 	"runArgs": [
-		"--init",
-		"--privileged",
-		"-t"
+		"--privileged"
 	],
 	"overrideCommand": false,
 	"containerEnv": {

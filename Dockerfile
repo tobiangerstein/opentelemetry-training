@@ -9,11 +9,7 @@ RUN apk add --update --no-cache \
     sudo \
     bash \
     curl \
-    gcc \
-    g++ \
-    python3-dev \
-    musl-dev \
-    linux-headers \
+    build-base \
     openjdk21-jdk \
     gradle \
     maven \
@@ -31,6 +27,7 @@ RUN pip install \
     Faker \
     opentelemetry-api \
     opentelemetry-sdk \
+    # opentelemetry-exporter-otlp \
     opentelemetry-exporter-prometheus \
     opentelemetry-instrumentation-flask
 
